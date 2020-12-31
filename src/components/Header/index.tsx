@@ -8,9 +8,11 @@ import OutlinedInput from "@material-ui/core/OutlinedInput";
 import Button from "@material-ui/core/Button";
 import SearchIcon from "@material-ui/icons/Search";
 import useHeaderStyles from "./useHeaderStyles";
+import useScroll from "@/hooks/useScroll";
 
 const Header = () => {
   const classes = useHeaderStyles();
+  const elevate = useScroll();
   const [search, setSearch] = useState("");
 
   const handleInput = (
@@ -21,7 +23,7 @@ const Header = () => {
     <AppBar
       color="inherit"
       position="sticky"
-      elevation={0}
+      elevation={elevate ? 3 : 0}
       className={classes.root}
     >
       <Toolbar>

@@ -5,7 +5,7 @@ const useHeaderStyles = makeStyles(theme =>
     root: {
       backgroundColor: "#fffc",
       backdropFilter: "blur(6px)",
-      transition: theme.transitions.create("background-color", {
+      transition: theme.transitions.create(["box-shadow", "background-color"], {
         duration: theme.transitions.duration.short,
         easing: theme.transitions.easing.easeOut
       }),
