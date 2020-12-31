@@ -6,7 +6,15 @@ const usePhotoListing = makeStyles(theme =>
       margin: theme.spacing(3, "auto"),
       width: "100%",
       minHeight: "100vh",
-      columnCount: 3
+      columnCount: 1,
+
+      [theme.breakpoints.up("sm")]: {
+        columnCount: 2
+      },
+
+      [theme.breakpoints.up("md")]: {
+        columnCount: 3
+      }
     },
     image: {
       position: "relative",
