@@ -61,29 +61,37 @@ const AddPhotoDialog: React.FC<IAddPhotoDialogProps> = ({
     }
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    try {
+      setUploading(true);
+      const { url, label } = values;
 
-    const { url, label } = values;
+      const database = firebase.firestore().collection("images").doc();
+      const storageRef = firebase.storage().ref();
 
-    const database = firebase.firestore().collection("images").doc();
-    const storageRef = firebase.storage().ref();
+      if (file) {
+        database.set({ label });
 
-    if (file) {
-      database.set({ label });
+        const filename = `${label
+          .toLowerCase()
+          .split(" ")
+          .join("-")}.${file.name.split(".").pop()}`;
 
-      const uploadTask = storageRef
-        .child(
-          `images/${label.toLowerCase().split(" ").join("-")}.
-          ${file.name.split(".").pop()}`
-        )
-        .put(file);
+        await storageRef.child(`images/${filename}`).put(file);
 
-      uploadTask.then(() => {
-        setUploading(false);
-      });
-    } else if (url) {
-      database.set({ url, label });
+        setValues({ url: "", label: "" });
+        clearPreview();
+
+        handleClose();
+      } else if (url) {
+        database.set({ url, label });
+      }
+    } catch (error) {
+      setError("Something went wrong!");
+      console.log(error);
+    } finally {
+      setUploading(false);
     }
   };
 
