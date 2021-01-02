@@ -75,6 +75,8 @@ const AddPhotoDialog: React.FC<IAddPhotoDialogProps> = ({
       const database = firebase.firestore().collection("images").doc();
       const storageRef = firebase.storage().ref();
 
+      if (!label) throw new Error();
+
       if (file) {
         database.set({ label });
 
@@ -89,6 +91,7 @@ const AddPhotoDialog: React.FC<IAddPhotoDialogProps> = ({
         clearPreview();
 
         handleClose();
+        setTab(0);
       } else if (url) {
         database.set({ url, label });
       }
