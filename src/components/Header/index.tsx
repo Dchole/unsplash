@@ -11,9 +11,8 @@ import SearchIcon from "@material-ui/icons/Search";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import useHeaderStyles from "./useHeaderStyles";
 import useScroll from "@/hooks/useScroll";
-import AddPhotoDialog from "../AddPhotoDialog";
 
-// const AddPhotoDialog = dynamic(() => import("@/components/AddPhotoDialog"));
+const AddPhotoDialog = dynamic(() => import("@/components/AddPhotoDialog"));
 
 const options = ["Option 1", "Option 2"];
 

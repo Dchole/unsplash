@@ -1,3 +1,4 @@
+import dynamic from "next/dynamic";
 import { useRef, useState } from "react";
 import Dialog from "@material-ui/core/Dialog";
 import TextField from "@material-ui/core/TextField";
@@ -12,6 +13,8 @@ import AddIcon from "@material-ui/icons/Add";
 import firebase from "@/lib/firebaseConfig";
 import useDialogStyles from "./useDialogStyles";
 import TabPanel from "./TabPanel";
+
+const Toast = dynamic(() => import("./Toast"));
 
 interface IAddPhotoDialogProps {
   open: boolean;
@@ -34,6 +37,8 @@ const AddPhotoDialog: React.FC<IAddPhotoDialogProps> = ({
     label: "",
     url: ""
   });
+
+  const clearError = () => setError("");
 
   const clearPreview = () => {
     setFile(null);
@@ -96,91 +101,99 @@ const AddPhotoDialog: React.FC<IAddPhotoDialogProps> = ({
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} className={classes.paper}>
-      <form onSubmit={handleSubmit}>
-        <TextField
-          id="label"
-          name="label"
-          variant="outlined"
-          label="Label"
-          value={values.label}
-          onChange={handleInput}
-          autoComplete="off"
-          fullWidth
-          required
-        />
-        <Typography component="h2" variant="h6">
-          Select method
-        </Typography>
-        <Tabs
-          value={tab}
-          onChange={handleChange}
-          aria-label="Select upload method"
-        >
-          <Tab label="Url" id="option-0" />
-          <Tab label="Device" id="option-1" />
-        </Tabs>
-        <TabPanel tab={tab} index={0}>
+    <>
+      <Dialog open={open} onClose={handleClose} className={classes.paper}>
+        <form onSubmit={handleSubmit}>
           <TextField
-            id="url"
-            name="url"
-            type="url"
-            margin="normal"
+            id="label"
+            name="label"
             variant="outlined"
-            label="Photo Url"
-            value={values.url}
+            label="Label"
+            value={values.label}
             onChange={handleInput}
+            autoComplete="off"
             fullWidth
             required
           />
-        </TabPanel>
-        <TabPanel tab={tab} index={1}>
-          {file ? (
-            <div className={classes.preview}>
-              <IconButton
-                size="small"
-                onClick={clearPreview}
-                aria-label="clear preview"
-              >
-                <CloseIcon />
-              </IconButton>
-              <img src={preview} alt="preview" />
-            </div>
-          ) : (
-            <>
-              <input
-                ref={inputRef}
-                type="file"
-                accept="image/*"
-                onChange={handleUpload}
-              />
-              <Button
-                color="primary"
-                startIcon={<AddIcon />}
-                className={classes.uploadBtn}
-                onClick={() => inputRef?.current?.click()}
-                fullWidth
-              >
-                Upload
-              </Button>
-            </>
-          )}
-        </TabPanel>
-        <div className="dialog-actions">
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button
-            type="submit"
-            color="primary"
-            variant="contained"
-            disabled={uploading}
-            disableRipple={uploading}
-            disableElevation={uploading}
+          <Typography component="h2" variant="h6">
+            Select method
+          </Typography>
+          <Tabs
+            value={tab}
+            onChange={handleChange}
+            aria-label="Select upload method"
           >
-            {uploading ? <CircularProgress size={25} /> : "Save"}
-          </Button>
-        </div>
-      </form>
-    </Dialog>
+            <Tab label="Url" id="option-0" />
+            <Tab label="Device" id="option-1" />
+          </Tabs>
+          <TabPanel tab={tab} index={0}>
+            <TextField
+              id="url"
+              name="url"
+              type="url"
+              margin="normal"
+              variant="outlined"
+              label="Photo Url"
+              value={values.url}
+              onChange={handleInput}
+              fullWidth
+              required
+            />
+          </TabPanel>
+          <TabPanel tab={tab} index={1}>
+            {file ? (
+              <div className={classes.preview}>
+                <IconButton
+                  size="small"
+                  onClick={clearPreview}
+                  aria-label="clear preview"
+                >
+                  <CloseIcon />
+                </IconButton>
+                <img src={preview} alt="preview" />
+              </div>
+            ) : (
+              <>
+                <input
+                  ref={inputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleUpload}
+                />
+                <Button
+                  color="primary"
+                  startIcon={<AddIcon />}
+                  className={classes.uploadBtn}
+                  onClick={() => inputRef?.current?.click()}
+                  fullWidth
+                >
+                  Upload
+                </Button>
+              </>
+            )}
+          </TabPanel>
+          <div className="dialog-actions">
+            <Button onClick={handleClose}>Cancel</Button>
+            <Button
+              type="submit"
+              color="primary"
+              variant="contained"
+              disabled={uploading}
+              disableRipple={uploading}
+              disableElevation={uploading}
+            >
+              {uploading ? <CircularProgress size={25} /> : "Save"}
+            </Button>
+          </div>
+        </form>
+      </Dialog>
+      <Toast
+        open={Boolean(error)}
+        severity="error"
+        message={error}
+        handleClose={clearError}
+      />
+    </>
   );
 };
 
