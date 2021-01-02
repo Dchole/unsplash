@@ -6,8 +6,10 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import IconButton from "@material-ui/core/IconButton";
 import Button from "@material-ui/core/Button";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import CloseIcon from "@material-ui/icons/Close";
 import AddIcon from "@material-ui/icons/Add";
+import firebase from "@/lib/firebaseConfig";
 import useDialogStyles from "./useDialogStyles";
 import TabPanel from "./TabPanel";
 
@@ -20,16 +22,23 @@ const AddPhotoDialog: React.FC<IAddPhotoDialogProps> = ({
   open,
   handleClose
 }) => {
-  const inputRef = useRef<HTMLInputElement | null>(null);
   const classes = useDialogStyles();
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState("");
   const [tab, setTab] = useState(0);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState("");
   const [values, setValues] = useState({
     label: "",
     url: ""
   });
+
+  const clearPreview = () => {
+    setFile(null);
+    setPreview("");
+  };
 
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValues(v => ({ ...v, [event.target.name]: event.target.value }));
@@ -37,25 +46,45 @@ const AddPhotoDialog: React.FC<IAddPhotoDialogProps> = ({
 
   const handleChange = (_event: React.ChangeEvent<{}>, newValue: number) => {
     setTab(newValue);
+    // Clear field when tab changes
+    newValue === 0 ? clearPreview() : setValues(v => ({ ...v, url: "" }));
   };
-
-  const handleClick = () => inputRef?.current?.click();
 
   const handleUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files![0];
-    setFile(file);
-    setPreview(URL.createObjectURL(file));
-  };
 
-  const handleClearPreview = () => {
-    setFile(null);
-    setPreview("");
+    if (file.type.includes("image/")) {
+      setFile(file);
+      setPreview(URL.createObjectURL(file));
+    } else {
+      setError("Invalid file type");
+    }
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    console.log(values);
+    const { url, label } = values;
+
+    const database = firebase.firestore().collection("images").doc();
+    const storageRef = firebase.storage().ref();
+
+    if (file) {
+      database.set({ label });
+
+      const uploadTask = storageRef
+        .child(
+          `images/${label.toLowerCase().split(" ").join("-")}.
+          ${file.name.split(".").pop()}`
+        )
+        .put(file);
+
+      uploadTask.then(() => {
+        setUploading(false);
+      });
+    } else if (url) {
+      database.set({ url, label });
+    }
   };
 
   return (
@@ -70,6 +99,7 @@ const AddPhotoDialog: React.FC<IAddPhotoDialogProps> = ({
           onChange={handleInput}
           autoComplete="off"
           fullWidth
+          required
         />
         <Typography component="h2" variant="h6">
           Select method
@@ -79,8 +109,8 @@ const AddPhotoDialog: React.FC<IAddPhotoDialogProps> = ({
           onChange={handleChange}
           aria-label="Select upload method"
         >
-          <Tab label="Url" id="from-url" />
-          <Tab label="Device" id="from-device" />
+          <Tab label="Url" id="option-0" />
+          <Tab label="Device" id="option-1" />
         </Tabs>
         <TabPanel tab={tab} index={0}>
           <TextField
@@ -93,6 +123,7 @@ const AddPhotoDialog: React.FC<IAddPhotoDialogProps> = ({
             value={values.url}
             onChange={handleInput}
             fullWidth
+            required
           />
         </TabPanel>
         <TabPanel tab={tab} index={1}>
@@ -100,7 +131,7 @@ const AddPhotoDialog: React.FC<IAddPhotoDialogProps> = ({
             <div className={classes.preview}>
               <IconButton
                 size="small"
-                onClick={handleClearPreview}
+                onClick={clearPreview}
                 aria-label="clear preview"
               >
                 <CloseIcon />
@@ -119,7 +150,7 @@ const AddPhotoDialog: React.FC<IAddPhotoDialogProps> = ({
                 color="primary"
                 startIcon={<AddIcon />}
                 className={classes.uploadBtn}
-                onClick={handleClick}
+                onClick={() => inputRef?.current?.click()}
                 fullWidth
               >
                 Upload
@@ -129,8 +160,15 @@ const AddPhotoDialog: React.FC<IAddPhotoDialogProps> = ({
         </TabPanel>
         <div className="dialog-actions">
           <Button onClick={handleClose}>Cancel</Button>
-          <Button type="submit" color="primary" variant="contained">
-            Save
+          <Button
+            type="submit"
+            color="primary"
+            variant="contained"
+            disabled={uploading}
+            disableRipple={uploading}
+            disableElevation={uploading}
+          >
+            {uploading ? <CircularProgress size={25} /> : "Save"}
           </Button>
         </div>
       </form>

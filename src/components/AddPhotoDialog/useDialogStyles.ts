@@ -3,12 +3,9 @@ import { createStyles, lighten, makeStyles } from "@material-ui/core/styles";
 const useDialogStyles = makeStyles(theme =>
   createStyles({
     paper: {
-      "& input[type=file]": {
-        display: "none"
-      },
-
       "& .MuiDialog-paper": {
         padding: theme.spacing(2),
+        maxWidth: 360,
         margin: 0,
 
         "& .dialog-actions": {
@@ -18,6 +15,10 @@ const useDialogStyles = makeStyles(theme =>
           gap: theme.spacing(2),
           marginTop: theme.spacing(1)
         }
+      },
+
+      "& input[type=file]": {
+        display: "none"
       },
 
       "& h2": {
@@ -61,12 +62,13 @@ const useDialogStyles = makeStyles(theme =>
       backgroundColor: lighten(theme.palette.primary.light, 0.8)
     },
     preview: {
-      position: "relative",
-      border: `1px solid ${theme.palette.primary.light}`,
+      marginTop: 8,
       borderRadius: 8,
+      position: "relative",
 
       "& img": {
-        width: "100%"
+        width: "100%",
+        border: `1px solid ${theme.palette.primary.light}`
       },
 
       "& button": {

@@ -14,8 +14,8 @@ const TabPanel: React.FC<ITabPanelProps> = ({
     <div
       role="tabpanel"
       hidden={tab !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
+      id={`tabpanel-${index}`}
+      aria-labelledby={`option-${index}`}
       className={className}
     >
       {tab === index && <>{children}</>}

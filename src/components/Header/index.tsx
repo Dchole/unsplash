@@ -8,10 +8,14 @@ import Grid from "@material-ui/core/Grid";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import Button from "@material-ui/core/Button";
 import SearchIcon from "@material-ui/icons/Search";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 import useHeaderStyles from "./useHeaderStyles";
 import useScroll from "@/hooks/useScroll";
+import AddPhotoDialog from "../AddPhotoDialog";
 
-const AddPhotoDialog = dynamic(() => import("@/components/AddPhotoDialog"));
+// const AddPhotoDialog = dynamic(() => import("@/components/AddPhotoDialog"));
+
+const options = ["Option 1", "Option 2"];
 
 const Header = () => {
   const classes = useHeaderStyles();
@@ -23,8 +27,11 @@ const Header = () => {
   const handleClose = () => setOpen(false);
 
   const handleInput = (
-    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
-  ) => setSearch(event.target.value);
+    _event: React.ChangeEvent<HTMLInputElement>,
+    newValue: string
+  ) => {
+    setSearch(newValue);
+  };
 
   return (
     <>
@@ -37,16 +44,28 @@ const Header = () => {
         <Toolbar>
           <Container component={Grid} justify="space-between" container>
             <Image src="/logo.svg" alt="logo" width="140" height="40" />
-            <OutlinedInput
+            <Autocomplete
               id="search"
-              type="search"
-              placeholder="Search by name"
-              value={search}
-              onChange={handleInput}
+              options={options}
+              inputValue={search}
+              onInputChange={handleInput}
               className={classes.input}
-              startAdornment={<SearchIcon color="action" fontSize="small" />}
-              autoComplete="search"
-              inputProps={{ "aria-label": "Search by name" }}
+              autoHighlight
+              renderInput={params => (
+                <OutlinedInput
+                  type="search"
+                  placeholder="Search by name"
+                  ref={params.InputProps.ref}
+                  startAdornment={
+                    <SearchIcon color="action" fontSize="small" />
+                  }
+                  inputProps={{
+                    "aria-label": "Search by name",
+                    ...params.inputProps
+                  }}
+                  fullWidth
+                />
+              )}
             />
             <Button
               color="primary"

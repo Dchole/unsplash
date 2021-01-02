@@ -26,7 +26,7 @@ const useHeaderStyles = makeStyles(theme =>
       },
 
       "& .MuiOutlinedInput-input": {
-        padding: 0,
+        padding: theme.spacing(1.5, 1.75),
         fontFamily: "'Noto Sans', sans-serif"
       },
 
