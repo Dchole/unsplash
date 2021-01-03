@@ -10,7 +10,7 @@ import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import CloseIcon from "@material-ui/icons/Close";
 import AddIcon from "@material-ui/icons/Add";
-import firebase from "@/lib/firebaseConfig";
+import firebase from "@/lib/firebase-config";
 import useDialogStyles from "./useDialogStyles";
 import TabPanel from "./TabPanel";
 

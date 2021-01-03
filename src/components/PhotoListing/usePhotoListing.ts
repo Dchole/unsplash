@@ -22,6 +22,37 @@ const usePhotoListing = makeStyles(theme =>
       marginBottom: 8,
       borderRadius: 8,
 
+      "& button, & p": {
+        transition: theme.transitions.create("opacity", {
+          easing: theme.transitions.easing.easeOut,
+          duration: theme.transitions.duration.short
+        }),
+        position: "absolute",
+        zIndex: 1000,
+        opacity: 0
+      },
+
+      "& .MuiButton-root": {
+        top: theme.spacing(2),
+        right: theme.spacing(2),
+        borderWidth: 2
+      },
+
+      "& p": {
+        bottom: theme.spacing(2),
+        left: theme.spacing(2),
+        color: "white",
+        fontSize: 24
+      },
+
+      "&:hover p, &:focus p, &:focus-within p, &:hover button, &:focus button, &:focus-within button": {
+        opacity: 1
+      },
+
+      "&:hover img, &:focus img, &:focus-within img": {
+        filter: "blur(1.5px) brightness(0.5)"
+      },
+
       "& > div": {
         display: "initial !important",
         overflow: "auto !important",
@@ -37,7 +68,11 @@ const usePhotoListing = makeStyles(theme =>
           minWidth: "100% !important",
           maxWidth: "100% !important",
           minHeight: "100% !important",
-          maxHeight: "100% !important"
+          maxHeight: "100% !important",
+          transition: theme.transitions.create("filter", {
+            easing: theme.transitions.easing.easeOut,
+            duration: theme.transitions.duration.short
+          })
         }
       }
     }
