@@ -24,7 +24,8 @@ const useHeaderStyles = makeStyles(theme =>
       }),
 
       [theme.breakpoints.up("sm")]: {
-        flexGrow: "initial"
+        flexGrow: "initial",
+        marginBottom: 0
       },
 
       "&:focus-within": {

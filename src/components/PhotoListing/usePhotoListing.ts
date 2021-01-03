@@ -41,8 +41,7 @@ const usePhotoListing = makeStyles(theme =>
       "& p": {
         bottom: theme.spacing(2),
         left: theme.spacing(2),
-        color: "white",
-        fontSize: 24
+        color: "white"
       },
 
       "&:hover p, &:focus p, &:focus-within p, &:hover button, &:focus button, &:focus-within button": {
