@@ -16,10 +16,16 @@ const useHeaderStyles = makeStyles(theme =>
     },
     input: {
       width: 240,
+      flexGrow: 1,
+      marginBottom: 10,
       transition: theme.transitions.create("width", {
         duration: theme.transitions.duration.shortest,
         easing: theme.transitions.easing.easeOut
       }),
+
+      [theme.breakpoints.up("sm")]: {
+        flexGrow: "initial"
+      },
 
       "&:focus-within": {
         width: 500
@@ -40,6 +46,12 @@ const useHeaderStyles = makeStyles(theme =>
     },
     button: {
       fontFamily: "'Noto Sans', sans-serif"
+    },
+    fab: {
+      position: "fixed",
+      bottom: 20,
+      right: 20,
+      zIndex: theme.zIndex.speedDial
     }
   })
 );

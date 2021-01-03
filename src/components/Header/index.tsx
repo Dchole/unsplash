@@ -6,8 +6,11 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
+import Hidden from "@material-ui/core/Hidden";
 import Button from "@material-ui/core/Button";
+import Fab from "@material-ui/core/Fab";
 import SearchIcon from "@material-ui/icons/Search";
+import AddIcon from "@material-ui/icons/Add";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import useHeaderStyles from "./useHeaderStyles";
 import useScroll from "@/hooks/useScroll";
@@ -66,17 +69,29 @@ const Header = () => {
                 />
               )}
             />
-            <Button
-              color="primary"
-              variant="contained"
-              className={classes.button}
-              onClick={handleOpen}
-            >
-              Add a photo
-            </Button>
+            <Hidden xsDown>
+              <Button
+                color="primary"
+                variant="contained"
+                className={classes.button}
+                onClick={handleOpen}
+              >
+                Add a photo
+              </Button>
+            </Hidden>
           </Container>
         </Toolbar>
       </AppBar>
+      <Hidden implementation="css" smUp>
+        <Fab
+          color="primary"
+          aria-label="Add a photo"
+          onClick={handleOpen}
+          className={classes.fab}
+        >
+          <AddIcon />
+        </Fab>
+      </Hidden>
       <AddPhotoDialog open={open} handleClose={handleClose} />
     </>
   );
