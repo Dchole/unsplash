@@ -1,3 +1,5 @@
+import { useContext } from "react";
+import { PhotosContext } from "PhotosContext";
 import usePhotos from "@/hooks/usePhotos";
 import Container from "@material-ui/core/Container";
 import Button from "@material-ui/core/Button";
@@ -8,7 +10,7 @@ import usePhotoListing from "./usePhotoListing";
 
 const PhotoListing = () => {
   const classes = usePhotoListing();
-  const { photos } = usePhotos();
+  const { photos } = useContext(PhotosContext);
 
   return (
     <Container component="main" className={classes.container}>

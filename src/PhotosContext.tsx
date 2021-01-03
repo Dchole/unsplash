@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import firebase from "@/lib/firebase-config";
 
 export interface IPhoto {
@@ -7,7 +7,15 @@ export interface IPhoto {
   photoURL: string;
 }
 
-const usePhotos = () => {
+interface IPhotosContextProps {
+  photos: IPhoto[];
+  searchOptions: string[];
+  handleFilter: (label: string) => void;
+}
+
+export const PhotosContext = createContext({} as IPhotosContextProps);
+
+const PhotosContextProvider = ({ children }) => {
   const [photos, setPhotos] = useState<IPhoto[]>([]);
   const [filter, setFilter] = useState("");
   const [searchOptions, setSearchOptions] = useState<string[]>([]);
@@ -43,7 +51,11 @@ const usePhotos = () => {
     }
   }, [filter]);
 
-  return { photos, searchOptions, handleFilter };
+  return (
+    <PhotosContext.Provider value={{ photos, searchOptions, handleFilter }}>
+      {children}
+    </PhotosContext.Provider>
+  );
 };
 
-export default usePhotos;
+export default PhotosContextProvider;

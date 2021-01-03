@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import AppBar from "@material-ui/core/AppBar";
@@ -14,14 +14,14 @@ import AddIcon from "@material-ui/icons/Add";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import useHeaderStyles from "./useHeaderStyles";
 import useScroll from "@/hooks/useScroll";
-import usePhotos from "@/hooks/usePhotos";
+import { PhotosContext } from "PhotosContext";
 
 const AddPhotoDialog = dynamic(() => import("@/components/AddPhotoDialog"));
 
 const Header = () => {
   const classes = useHeaderStyles();
   const elevate = useScroll();
-  const { searchOptions: options } = usePhotos();
+  const { searchOptions: options, handleFilter } = useContext(PhotosContext);
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
 
@@ -33,6 +33,7 @@ const Header = () => {
     newValue: string
   ) => {
     setSearch(newValue);
+    handleFilter(newValue);
   };
 
   return (
