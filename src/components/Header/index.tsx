@@ -14,14 +14,14 @@ import AddIcon from "@material-ui/icons/Add";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import useHeaderStyles from "./useHeaderStyles";
 import useScroll from "@/hooks/useScroll";
+import usePhotos from "@/hooks/usePhotos";
 
 const AddPhotoDialog = dynamic(() => import("@/components/AddPhotoDialog"));
-
-const options = ["Option 1", "Option 2"];
 
 const Header = () => {
   const classes = useHeaderStyles();
   const elevate = useScroll();
+  const { searchOptions: options } = usePhotos();
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
 

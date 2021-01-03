@@ -1,11 +1,11 @@
 declare namespace NodeJS {
   interface ProcessEnv {
-    API_Key: string;
-    APIKEY: string;
-    AUTHDOMAIN: string;
-    PROJECTID: string;
-    STORAGEBUCKET: string;
-    MESSAGINGSENDERID: string;
-    APPID: string;
+    NEXT_PUBLIC_API_Key: string;
+    NEXT_PUBLIC_APIKEY: string;
+    NEXT_PUBLIC_AUTHDOMAIN: string;
+    NEXT_PUBLIC_PROJECTID: string;
+    NEXT_PUBLIC_STORAGEBUCKET: string;
+    NEXT_PUBLIC_MESSAGINGSENDERID: string;
+    NEXT_PUBLIC_APPID: string;
   }
 }

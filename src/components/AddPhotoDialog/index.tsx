@@ -13,6 +13,7 @@ import AddIcon from "@material-ui/icons/Add";
 import firebase from "@/lib/firebase-config";
 import useDialogStyles from "./useDialogStyles";
 import TabPanel from "./TabPanel";
+import slugify from "@/utils/slugify";
 
 const Toast = dynamic(() => import("./Toast"));
 
@@ -27,7 +28,6 @@ const AddPhotoDialog: React.FC<IAddPhotoDialogProps> = ({
 }) => {
   const classes = useDialogStyles();
   const inputRef = useRef<HTMLInputElement | null>(null);
-
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState("");
   const [tab, setTab] = useState(0);
@@ -35,7 +35,7 @@ const AddPhotoDialog: React.FC<IAddPhotoDialogProps> = ({
   const [error, setError] = useState("");
   const [values, setValues] = useState({
     label: "",
-    url: ""
+    photoURL: ""
   });
 
   const clearError = () => setError("");
@@ -52,7 +52,7 @@ const AddPhotoDialog: React.FC<IAddPhotoDialogProps> = ({
   const handleChange = (_event: React.ChangeEvent<{}>, newValue: number) => {
     setTab(newValue);
     // Clear field when tab changes
-    newValue === 0 ? clearPreview() : setValues(v => ({ ...v, url: "" }));
+    newValue === 0 ? clearPreview() : setValues(v => ({ ...v, photoURL: "" }));
   };
 
   const handleUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -70,31 +70,37 @@ const AddPhotoDialog: React.FC<IAddPhotoDialogProps> = ({
     event.preventDefault();
     try {
       setUploading(true);
-      const { url, label } = values;
 
       const database = firebase.firestore().collection("images").doc();
       const storageRef = firebase.storage().ref();
 
-      if (!label) throw new Error();
+      if (!values.label) throw new Error();
+
+      let valuesCopy = { ...values };
 
       if (file) {
-        database.set({ label });
+        const filename = `${slugify(values.label)}.${file.name
+          .split(".")
+          .pop()}`;
 
-        const filename = `${label
-          .toLowerCase()
-          .split(" ")
-          .join("-")}.${file.name.split(".").pop()}`;
+        const photoURL = await storageRef
+          .child(`images/${filename}`)
+          .put(file)
+          .then(snapshot => snapshot.ref.getDownloadURL());
 
-        await storageRef.child(`images/${filename}`).put(file);
-
-        setValues({ url: "", label: "" });
-        clearPreview();
-
-        handleClose();
+        valuesCopy.photoURL = photoURL;
         setTab(0);
-      } else if (url) {
-        database.set({ url, label });
       }
+
+      database.set({
+        ...valuesCopy,
+        date: firebase.firestore.Timestamp.fromDate(new Date())
+      });
+
+      setValues({ photoURL: "", label: "" });
+      clearPreview();
+      clearError();
+      handleClose();
     } catch (error) {
       setError("Something went wrong!");
       console.log(error);
@@ -131,13 +137,13 @@ const AddPhotoDialog: React.FC<IAddPhotoDialogProps> = ({
           </Tabs>
           <TabPanel tab={tab} index={0}>
             <TextField
-              id="url"
-              name="url"
-              type="url"
+              id="photoURL"
+              name="photoURL"
+              type="photoURL"
               margin="normal"
               variant="outlined"
               label="Photo Url"
-              value={values.url}
+              value={values.photoURL}
               onChange={handleInput}
               fullWidth
               required

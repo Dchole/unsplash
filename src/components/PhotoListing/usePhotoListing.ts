@@ -52,28 +52,18 @@ const usePhotoListing = makeStyles(theme =>
         filter: "blur(1.5px) brightness(0.5)"
       },
 
-      "& > div": {
-        display: "initial !important",
-        overflow: "auto !important",
-        position: "initial !important",
-
-        "& img": {
-          borderRadius: 8,
-          visibility: "initial !important",
-          position: "initial !important",
-          display: "initial !important",
-          width: "100% !important",
-          height: "100% !important",
-          minWidth: "100% !important",
-          maxWidth: "100% !important",
-          minHeight: "100% !important",
-          maxHeight: "100% !important",
-          transition: theme.transitions.create("filter", {
-            easing: theme.transitions.easing.easeOut,
-            duration: theme.transitions.duration.short
-          })
-        }
+      "& img": {
+        borderRadius: 8,
+        width: "100%",
+        transition: theme.transitions.create("filter", {
+          easing: theme.transitions.easing.easeOut,
+          duration: theme.transitions.duration.short
+        })
       }
+    },
+    skeleton: {
+      marginBottom: theme.spacing(2),
+      borderRadius: 8
     }
   })
 );
