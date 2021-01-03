@@ -3,14 +3,14 @@ import Alert from "@material-ui/lab/Alert";
 
 interface IToastProps {
   open: boolean;
-  severity?: "success" | "error";
+  severity?: "success" | "info" | "warning" | "error";
   message: string;
   handleClose: () => void;
 }
 
 const Toast: React.FC<IToastProps> = ({
   open,
-  severity = "success",
+  severity = "error",
   message,
   handleClose
 }) => {

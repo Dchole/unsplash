@@ -5,6 +5,7 @@ export interface IPhoto {
   id: string;
   label: string;
   photoURL: string;
+  filename?: string;
 }
 
 interface IPhotosContextProps {

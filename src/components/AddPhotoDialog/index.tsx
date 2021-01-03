@@ -77,11 +77,10 @@ const AddPhotoDialog: React.FC<IAddPhotoDialogProps> = ({
       if (!values.label) throw new Error();
 
       let valuesCopy = { ...values };
+      let filename: string;
 
       if (file) {
-        const filename = `${slugify(values.label)}.${file.name
-          .split(".")
-          .pop()}`;
+        filename = `${slugify(values.label)}.${file.name.split(".").pop()}`;
 
         const photoURL = await storageRef
           .child(`images/${filename}`)
@@ -92,10 +91,16 @@ const AddPhotoDialog: React.FC<IAddPhotoDialogProps> = ({
         setTab(0);
       }
 
-      database.set({
-        ...valuesCopy,
-        date: firebase.firestore.Timestamp.fromDate(new Date())
-      });
+      filename
+        ? database.set({
+            ...valuesCopy,
+            filename,
+            date: firebase.firestore.Timestamp.fromDate(new Date())
+          })
+        : database.set({
+            ...valuesCopy,
+            date: firebase.firestore.Timestamp.fromDate(new Date())
+          });
 
       setValues({ photoURL: "", label: "" });
       clearPreview();
@@ -188,7 +193,6 @@ const AddPhotoDialog: React.FC<IAddPhotoDialogProps> = ({
               color="primary"
               variant="contained"
               disabled={uploading}
-              disableRipple={uploading}
               disableElevation={uploading}
             >
               {uploading ? <CircularProgress size={25} /> : "Save"}
@@ -196,12 +200,7 @@ const AddPhotoDialog: React.FC<IAddPhotoDialogProps> = ({
           </div>
         </form>
       </Dialog>
-      <Toast
-        open={Boolean(error)}
-        severity="error"
-        message={error}
-        handleClose={clearError}
-      />
+      <Toast open={Boolean(error)} message={error} handleClose={clearError} />
     </>
   );
 };
